@@ -1,5 +1,5 @@
-import { randomUUID } from 'crypto';
-import { User } from '../models/user/user';
+import { randomUUID } from "crypto";
+import { User } from "../models/user/user";
 
 const users: User[] = [new User("admin@test.com", "password")];
 const tokens: Record<string, string> = {};
@@ -18,12 +18,16 @@ export class UserRepository {
     static async findById(id: string): Promise<User | undefined> {
         return users.find((u) => u.id === id);
     }
-    
+
     static async getAll(): Promise<User[]> {
         return users;
     }
 
-    static async update(id: string, email?: string, password?: string): Promise<User | undefined> {
+    static async update(
+        id: string,
+        email?: string,
+        password?: string
+    ): Promise<User | undefined> {
         const userIndex = users.findIndex((u) => u.id === id);
         if (userIndex === -1) return undefined;
         const user = users[userIndex];

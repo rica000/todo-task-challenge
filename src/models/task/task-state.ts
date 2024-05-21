@@ -33,6 +33,7 @@ class InProgressState implements TaskState {
 
 class ArchivedState implements TaskState {
     setStatus(task: Task, status: TaskStatus): TaskStatus {
+        console.log(task, status);
         throw new Error("Cannot change status from Archived");
     }
 }

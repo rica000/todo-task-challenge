@@ -1,12 +1,18 @@
 import { randomUUID } from "crypto";
-import { ArchivedState, DoneState, InProgressState, NewState, TaskState } from "./task-state";
+import {
+    ArchivedState,
+    DoneState,
+    InProgressState,
+    NewState,
+    TaskState,
+} from "./task-state";
 
 export const taskStatuses = {
-    "new": NewState,
-    "in_progress": InProgressState,
-    "done": DoneState,
-    "archived": ArchivedState
-}
+    new: NewState,
+    in_progress: InProgressState,
+    done: DoneState,
+    archived: ArchivedState,
+};
 export type TaskStatus = keyof typeof taskStatuses;
 
 export class Task {

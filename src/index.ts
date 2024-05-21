@@ -1,2 +1,1 @@
-console.log("log from index.ts")
-
+console.log("log from index.ts");
