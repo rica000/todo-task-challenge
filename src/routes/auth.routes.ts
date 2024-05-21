@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 import { UserRepository } from "../repositories/user.repository";
 
 const router = express.Router();

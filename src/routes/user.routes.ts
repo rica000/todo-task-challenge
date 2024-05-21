@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 import { UserRepository } from "../repositories/user.repository";
 
 type PostBody = {
@@ -14,8 +14,7 @@ router.post("/users", async (req: Request<object, object, PostBody>, res: Respon
         const user = await UserRepository.create(email, password);
         res.status(201).send(user);
     } catch (error) {
-        if (error instanceof Error)
-            res.status(400).send({ error: error.message });
+        if (error instanceof Error) res.status(400).send({ error: error.message });
     }
 });
 

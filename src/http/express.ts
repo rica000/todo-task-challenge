@@ -9,11 +9,7 @@ app.use(express.json());
 
 app.use(authRoutes);
 
-const authenticate = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+const authenticate = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         res.status(401).send({

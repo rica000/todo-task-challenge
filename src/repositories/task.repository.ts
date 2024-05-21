@@ -18,10 +18,7 @@ export class TaskRepository {
         return tasks[userId];
     }
 
-    static async findById(
-        taskId: string,
-        userId: string
-    ): Promise<Task | undefined> {
+    static async findById(taskId: string, userId: string): Promise<Task | undefined> {
         return tasks[userId].find((t) => t.id === taskId);
     }
 
