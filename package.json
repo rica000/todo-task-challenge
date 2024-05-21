@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --import tsx --watch src/http/server.ts",
-    "test": "node --import tsx --test src/**/**.test.ts"
+    "test": "node --import tsx --test src/**/**/**.test.ts"
   },
   "author": "João Carvalho",
   "license": "ISC",

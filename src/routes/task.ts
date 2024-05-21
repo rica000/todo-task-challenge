@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { Task, TaskStatus } from "../models/task";
+import { Task, TaskStatus } from "../models/task/task";
 
 const tasks: Task[] = [];
 
