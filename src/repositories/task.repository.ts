@@ -40,4 +40,11 @@ export class TaskRepository {
         if (status) task.setStatus(status);
         return task;
     }
+
+    static async delete(userId: string, id: string): Promise<boolean> {
+        const taskIndex = tasks[userId].findIndex((t) => t.id === id);
+        if (taskIndex === -1) return false;
+        tasks[userId].splice(taskIndex, 1);
+        return true;
+    }
 }

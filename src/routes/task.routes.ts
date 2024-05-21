@@ -39,4 +39,11 @@ router.put("/tasks/:id", async (req: Request<{ id: string }, object, PutBody, Qu
     res.send(updatedTask);
 });
 
+router.delete("/tasks/:id", async (req: Request<{ id: string }, object, object, QueryParams>, res: Response) => {
+    const { userId } = req.query;
+    const { id } = req.params;
+    const updatedTask = await TaskRepository.delete(userId, id);
+    res.send(updatedTask);
+});
+
 export { router as taskRoutes };
