@@ -1,27 +1,75 @@
-# Task Management Code Challenge
+# Task Management System
 
-This repository contains a solution for a code challenge that involves creating a task management system. The system allows users to create tasks, update their status, and retrieve them.
+This project is a RESTful API for managing tasks, built using Express Web Server. It leverages design patterns (State, Factory) to handle task status transitions and provides CRUD operations for tasks with user authentication.
 
 ## Features
 
--   Create a new task with a title and description.
--   Update the status of a task. The status can be "New", "In Progress", "Done", or "Archived".
--   Retrieve a task by its ID.
+-   **Task Management:**
+    -   Create, read, update, and delete tasks (CRUD operations).
+    -   Four task statuses: To Do, In Progress, Done, Archived.
+    -   State pattern for controlled status transitions.
+-   **User Authentication:**
+    -   User registration and login.
+    -   Protected task endpoints with authentication.
+-   **Technology Stack:**
+    -   TypeScript: For type safety and maintainability.
+    -   Express: High-performance web framework.
+    -   Apollo Server: GraphQL integration.
+    -   In-memory Database (for now): Easy setup for development.
 
-## Implementation Details
+## Development Setup
 
-The task management system is implemented using TypeScript. The system uses the State and Factory design patterns to handle task status changes. The State pattern allows the system to change its behavior based on the task's current status, and the Factory pattern is used to create the appropriate state object based on the task's status.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/rica000/todo-task-challenge
+    ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
+    The server will typically run at `http://localhost:3000`.
 
-The `Task` class represents a task. Each task has an ID, title, description, and status. The status of a task is managed by a `TaskState` object, which is created by the `TaskStateFactory`.
+## Running with Docker
 
-## Usage
+1.  **Build the Docker image:**
+    ```bash
+    docker build -t task-management-system .
+    ```
+2.  **Run the Docker container:**
+    ```bash
+    docker run -p 3000:3000 task-management-system
+    ```
 
-To use the task management system, create a new `Task` object and call its methods to update its status and retrieve its details. Note that the `state` property is not included when a task is returned.
+## API Routes
 
-## Future Improvements
+### Authentication
 
-Future improvements could include adding more task statuses, implementing persistence, and adding user authentication.
+-   **`POST /auth/login`:** Log in as a user (default admin user: `admin@test.com`).
+-   **`POST /users`:** Register a new user.
+
+### Tasks (Protected, requires bearer token)
+
+-   **`GET /tasks`:** Retrieve all tasks for the authenticated user.
+-   **`POST /tasks`:** Create a new task.
+-   **`GET /tasks/:id`:** Retrieve a specific task by ID.
+-   **`PUT /tasks/:id`:** Update a task.
+-   **`DELETE /tasks/:id`:** Delete a task.
+
+## Future Enhancements
+
+-   Replace in-memory database with a persistent storage solution (e.g., PostgreSQL, MongoDB).
+-   Implement more robust authentication and authorization mechanisms.
+-   Add task filtering, sorting, and searching capabilities.
+-   Implement user roles and permissions.
 
 ## Contributing
 
-Contributions are welcome. Please open an issue or submit a pull request if you have any improvements or suggestions.
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
