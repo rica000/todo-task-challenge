@@ -1,76 +1,69 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { Task, TaskStatus } from "../models/task/task";
+declare module "fastify" {
+    interface FastifyInstance {
+        authenticate: any;
+    }
+}
 
-const tasks: Task[] = [];
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { TaskRepository } from "../repositories/task-repository";
+import { TaskStatus } from "../models/task/task";
+
+type PostBody = {
+    title: string;
+    description: string;
+    userId: string;
+};
+
+type PutBody = PostBody & { status: TaskStatus };
+
+type GetBody = Pick<PostBody, "userId">;
 
 export function taskRoutes(fastify: FastifyInstance) {
-    fastify.get("/tasks", async (_: FastifyRequest, reply: FastifyReply) => {
-        reply.send(tasks);
-    });
-
-    fastify.post<{ Body: { title: string; description?: string } }>(
+    fastify.get(
         "/tasks",
+        { preHandler: fastify.authenticate },
+        async (
+            request: FastifyRequest<{ Body: GetBody }>,
+            reply: FastifyReply
+        ) => {
+            const tasks = await TaskRepository.getAllFromUserId(
+                request.body.userId
+            );
+            reply.send(tasks);
+        }
+    );
+
+    fastify.post<{ Body: PostBody }>(
+        "/tasks",
+        { preHandler: fastify.authenticate },
         async (request, reply) => {
-            const { title, description } = request.body;
-            const task = new Task(title, description);
-            tasks.push(task);
+            const { title, description, userId } = request.body;
+            const task = await TaskRepository.create(
+                title,
+                description,
+                userId
+            );
             reply.code(201).send(task);
         }
     );
 
-    fastify.get(
+    fastify.put<{ Body: PutBody; Params: { id: string } }>(
         "/tasks/:id",
-        async (
-            request: FastifyRequest<{ Params: { id: string } }>,
-            reply: FastifyReply
-        ) => {
-            const taskId = request.params.id;
-            const task = tasks.find((t) => t.id === taskId);
+        { preHandler: fastify.authenticate },
+        async (request, reply: FastifyReply) => {
+            const { title, description, status, userId } = request.body;
+            const task = await TaskRepository.update(
+                userId,
+                request.params.id,
+                title,
+                description,
+                status
+            );
             if (!task) {
                 reply.code(404).send({ error: "Task not found" });
                 return;
             }
             reply.send(task);
-        }
-    );
-
-    fastify.put<{
-        Body: { title?: string; description?: string; status?: TaskStatus };
-        Params: { id: string };
-    }>("/tasks/:id", async (request, reply) => {
-        try {
-            const taskId = request.params.id;
-            const { title, description, status } = request.body;
-            const taskIndex = tasks.findIndex((t) => t.id === taskId);
-            if (taskIndex === -1) {
-                reply.code(404).send({ error: "Task not found" });
-                return;
-            }
-            const task = tasks[taskIndex];
-            if (title) task.setTitle(title);
-            if (description) task.setDescription(description);
-            if (status) task.setStatus(status);
-            reply.send(task);
-        } catch (error) {
-            if (error instanceof Error)
-                reply.code(400).send({ error: error.message });
-        }
-    });
-
-    fastify.delete(
-        "/tasks/:id",
-        async (
-            request: FastifyRequest<{ Params: { id: string } }>,
-            reply: FastifyReply
-        ) => {
-            const taskId = request.params.id;
-            const taskIndex = tasks.findIndex((t) => t.id === taskId);
-            if (taskIndex === -1) {
-                reply.code(404).send({ error: "Task not found" });
-                return;
-            }
-            tasks.splice(taskIndex, 1);
-            reply.code(204).send();
         }
     );
 }

@@ -14,10 +14,14 @@ export class Task {
     private status: TaskStatus = "new";
     constructor(
         private title: string,
-        private description: string = ""
+        private description: string,
+        private userId: string
     ) {
         this.id = randomUUID();
+        this.title = title;
+        this.description = description;
         this.status = "new";
+        this.userId = userId;
     }
 
     public setTitle(title: string): void {
@@ -51,5 +55,9 @@ export class Task {
     public setStatus(status: TaskStatus): void {
         const state = this.createState(status);
         this.status = state.setStatus(this, status);
+    }
+
+    public getUserId(): string {
+        return this.userId;
     }
 }
