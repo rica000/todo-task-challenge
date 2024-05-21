@@ -25,17 +25,22 @@ describe("Email validations", () => {
     });
 });
 
-describe("Passowrd Validations", () => {
-    it("should set the password of the user", () => {
-        const user = new User("test@example.com", "password");
-        user.setPassword("newpassword");
-        assert.strictEqual(user.getPassword(), "newpassword");
+describe("Password validations", () => {
+    it("should throw an error for a password shorter than 8 characters", () => {
+        assert.throws(() => {
+            new User("teste@teste.com", "pass");
+        }, Error);
     });
 
-    it("should throw an error for a password less than 8 characters long", () => {
-        const user = new User("test@example.com", "password");
-        assert.throws(() => {
-            user.setPassword("short");
-        }, Error);
+    it("should set the password of the user", () => {
+        const user = new User("teste@teste.com", "password");
+        user.setPassword("newpassword");
+        assert.ok(user.checkPassword("newpassword"));
+    });
+
+    it("should check the password of the user", () => {
+        const user = new User("teste@teste.com", "password");
+        assert.ok(user.checkPassword("password"));
+        assert.ok(!user.checkPassword("wrongpassword"));
     });
 });

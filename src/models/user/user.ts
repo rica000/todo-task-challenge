@@ -1,12 +1,28 @@
-import { randomUUID } from 'crypto';
+import {
+    randomUUID,
+    createCipheriv,
+    createDecipheriv,
+    scryptSync,
+    randomBytes,
+} from "crypto";
 
 export class User {
     public readonly id: string;
+    private static readonly algorithm = "aes-192-cbc";
+    private static readonly key = scryptSync(
+        process.env.SECRET_KEY || "default_key",
+        "salt",
+        24
+    );
+    private static readonly ivLength = 16;
+
     constructor(
         private email: string,
         private password: string
     ) {
         this.id = randomUUID();
+        this.setEmail(email);
+        this.setPassword(password);
     }
 
     public setEmail(email: string): void {
@@ -24,11 +40,23 @@ export class User {
         if (password.length < 8) {
             throw new Error("Password must be at least 8 characters long");
         }
-        //encrypt password
-        this.password = password;
+
+        const iv = randomBytes(User.ivLength);
+        const cipher = createCipheriv(User.algorithm, User.key, iv);
+        let encrypted = cipher.update(password, "utf8", "hex");
+        encrypted += cipher.final("hex");
+        this.password = iv.toString("hex") + ":" + encrypted;
     }
 
-    public getPassword(): string {
-        return this.password;
+    public checkPassword(password: string): boolean {
+        const [iv, encrypted] = this.password.split(":");
+        const decipher = createDecipheriv(
+            User.algorithm,
+            User.key,
+            Buffer.from(iv, "hex")
+        );
+        let decrypted = decipher.update(encrypted, "hex", "utf8");
+        decrypted += decipher.final("utf8");
+        return password === decrypted;
     }
 }
