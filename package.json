@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "dev": "node --import tsx --watch src/http/server.ts",
     "test": "node --import tsx --test src/**/**.test.ts"
   },
   "author": "João Carvalho",
@@ -18,5 +19,8 @@
     "tsx": "^4.10.5",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.10.0"
+  },
+  "dependencies": {
+    "fastify": "^4.27.0"
   }
 }
