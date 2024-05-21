@@ -21,34 +21,34 @@ describe("Task basics", () => {
 
     it("should instantiate as new", () => {
         const task = new Task("test");
-        assert.strictEqual(task.getStatus(), "New");
+        assert.strictEqual(task.getStatus(), "new");
     });
 });
 
 describe("Task transitions", () => {
     it("should transition to in progress", () => {
         const task = new Task("test");
-        task.start();
-        assert.strictEqual(task.getStatus(), "In Progress");
+        task.setStatus("in_progress");
+        assert.strictEqual(task.getStatus(), "in_progress");
     });
 
     it("should transition to done", () => {
         const task = new Task("test");
-        task.start();
-        task.finish();
-        assert.strictEqual(task.getStatus(), "Done");
+        task.setStatus("in_progress");
+        task.setStatus("done");
+        assert.strictEqual(task.getStatus(), "done");
     });
 
-    it("should transition to archived", () => {
+    it("should transition to archived form new", () => {
         const task = new Task("test");
-        task.archive();
-        assert.strictEqual(task.getStatus(), "Archived");
+        task.setStatus("archived");
+        assert.strictEqual(task.getStatus(), "archived");
     });
 
     it("should not transition to done if not in progress", () => {
         const task = new Task("test");
         assert.throws(() => {
-            task.finish();
+            task.setStatus("done");
         });
     });
 });

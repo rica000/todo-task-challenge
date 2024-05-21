@@ -1,11 +1,24 @@
-type Status = "New" | "In Progress" | "Done" | "Archived";
+import { randomUUID } from "crypto";
+import { ArchivedState, DoneState, InProgressState, NewState, TaskState } from "./task-state";
+
+export const taskStatuses = {
+    "new": NewState,
+    "in_progress": InProgressState,
+    "done": DoneState,
+    "archived": ArchivedState
+}
+export type TaskStatus = keyof typeof taskStatuses;
 
 export class Task {
-    private status: Status = "New";
+    public readonly id: string;
+    private status: TaskStatus = "new";
     constructor(
         private title: string,
-        private description: string = "",
-    ) {}
+        private description: string = ""
+    ) {
+        this.id = randomUUID();
+        this.status = "new";
+    }
 
     public setTitle(title: string): void {
         this.title = title;
@@ -27,23 +40,16 @@ export class Task {
         return this.status;
     }
 
-    public start(): void {
-        if (this.status === "New") {
-            this.status = "In Progress";
-        } else {
-            throw new Error("Task is not new");
+    private createState(status: TaskStatus): TaskState {
+        const StateClass = taskStatuses[this.status];
+        if (!StateClass) {
+            throw new Error(`Invalid status: ${status}`);
         }
+        return new StateClass();
     }
 
-    public finish(): void {
-        if (this.status === "In Progress") {
-            this.status = "Done";
-        } else {
-            throw new Error("Task is not in progress");
-        }
-    }
-
-    public archive(): void {
-        this.status = "Archived";
+    public setStatus(status: TaskStatus): void {
+        const state = this.createState(status);
+        this.status = state.setStatus(this, status);
     }
 }
